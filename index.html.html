@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edebiyat Yazma Atölyesi - Masal Film Şeridi</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #d2cbbe;
+      color: #2b2521;
+      font-family: 'Georgia', serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    .container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 25px;
+      width: 95%;
+      max-width: 950px;
+    }
+    .nav-btn {
+      background: #b5aba0;
+      border: 2px solid #4a4137;
+      color: #2b2521;
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      font-size: 22px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      flex-shrink: 0;
+    }
+    .nav-btn:hover {
+      background: #4a4137;
+      color: #f7f4ed;
+      transform: scale(1.08);
+    }
+    .nav-btn:disabled {
+      border-color: #9e9589;
+      color: #9e9589;
+      background: #c2baae;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+    .stage {
+      flex-grow: 1;
+      max-width: 580px;
+      background: #c2b8a7; 
+      border: 2px solid #9e9589;
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 12px 35px rgba(43, 37, 33, 0.25);
+      padding: 20px;
+    }
+    .film-strip {
+      background: #1a1a1a;
+      border-radius: 4px;
+      padding: 8px 0;
+      position: relative;
+      border: 3px solid #332f2b;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+    }
+    .perforations-top, .perforations-bottom {
+      height: 10px;
+      background-image: radial-gradient(#c2b8a7 40%, transparent 45%);
+      background-size: 22px 10px;
+      background-repeat: repeat-x;
+    }
+    .screen-wrapper {
+      height: 270px;
+      overflow: hidden;
+      position: relative;
+      margin: 4px 15px;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #443e37;
+    }
+    .film-frame {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      opacity: 1;
+      transition: opacity 1.5s ease;
+    }
+    .film-frame.changing {
+      opacity: 0;
+    }
+    .text-panel {
+      padding: 15px 10px 5px 10px;
+      background: transparent;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      text-align: center;
+    }
+    .story-title {
+      font-size: 1.15rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #3b322b;
+      border-bottom: 1px solid #9e9589;
+      padding-bottom: 6px;
+      width: 100%;
+      letter-spacing: 0.5px;
+    }
+    .story-text {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #2b2521;
+      transition: opacity 1.5s ease;
+      white-space: pre-line;
+      width: 100%;
+      text-align: justify;
+    }
+    .story-text.changing {
+      opacity: 0;
+    }
+    .counter {
+      margin-top: 12px;
+      font-size: 0.85rem;
+      color: #594f44;
+      font-family: sans-serif;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <audio id="storyAudio" src="ses.mp3"></audio>
+
+  <div class="container">
+    <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">&#10094;</button>
+
+    <div class="stage">
+      <div class="film-strip">
+        <div class="perforations-top"></div>
+        <div class="screen-wrapper">
+          <img id="filmImage" class="film-frame" src="" alt="Film Şeridi Kare">
+        </div>
+        <div class="perforations-bottom"></div>
+      </div>
+
+      <div class="text-panel">
+        <div id="sectionTitle" class="story-title"></div>
+        <p id="storyText" class="story-text"></p>
+        <div id="counter" class="counter"></div>
+      </div>
+    </div>
+
+    <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">&#10095;</button>
+  </div>
+
+  <script>
+    const masalVerileri = [
+      {
+        baslik: "1. BÖLÜM: DÖŞEME",
+        resim: "resim1.jpg",
+        metin: "Bir zamanlar yüksek dağların eteklerinde gür çam ve sedir ormanlarıyla çevrili küçük bir köy varmış. Bu köyde ömrünü odunculuk yaparak geçirmiş, üç oğluyla birlikte mütevazı bir hayat süren yaşlı bir adam yaşarmış. Her sabah erkenden ormana gidip kurumuş ağaçları kesen, odunları boz eşeğine yükleyip kasabada satan bu adam, kazandığıyla hem evini geçindirir hem de kışlık hazırlık yaparmış.\n\nAradan yıllar geçmiş, güçlü kolları yorulmuş, dizleri eskisi gibi tutmaz olmuş. Bir akşam oğullarını yanına çağırarak bundan sonra ailenin geçim yükünün onların omuzlarında olduğunu, yaz bitmeden kışlık odunları hazırlamaları gerektiğini söylemiş. En büyük oğul hemen söze atılıp bu işi başaracaklarını belirtmiş, diğer kardeşler de onu desteklemiş. Yaşlı oduncu memnun olmuş ama yalnızca kurumuş ağaçları kesmeleri, yaş ağaca balta vurmamaları konusunda onları uyarmış."
+      },
+      {
+        baslik: "2. BÖLÜM: SERİM",
+        resim: "resim2.jpg",
+        metin: "Sabah gün doğmadan büyükoğul hazırlanıp babasının duasıyla ormana yola koyulmuş. Ormana vardığında kuş seslerinden başka bir şey duyulmuyormuş; eşeğini bağlayıp kuru bir ağaç bulmuş ve baltasını vurmuş ki birdenbire ormanda korkunç bir ses yankılanmış. Ses, baltayı bir daha indirirse başını gövdesinden ayıracağını söylemiş. Delikanlı korkudan neye uğradığını şaşırarak arkasına bile bakmadan köye kaçmış ve başından geçenleri anlatmış ancak kimse ona inanamamış.\n\nErtesi sabah bu kez ortanca kardeş şansını denemiş, o da aynı ormana gidip kuru bir ağaca baltasını vurur vurmaz aynı gür ve tehditkar sesle karşılaşmış. O da dehşet içinde baltasını düşürüp kaçmış ve abisinin anlattıklarını doğrulamış."
+      },
+      {
+        baslik: "3. BÖLÜM: DÜĞÜM",
+        resim: "resim3.jpg",
+        metin: "Yaşlı oduncu iki oğlu da korkup kaçtığı için iyice canı sıkılmış ve bu duruma şaşırmış. O sırada konuşulanları sessizce dinleyen en küçük oğul öne atılıp izin istemiş; babası abilerinin bile başaramadığını nasıl yapacağını sorsa da küçükoğulun kararlılığı karşısında razı olmuş.\n\nErtesi sabah erkenden türkü söyleye söyleye ormanın derinliklerine giden küçükoğul, yarısına kadar kurumuş iri bir çam bulup besmeleyle baltasını kaldırmış. İlk darbeyi vurduğunda abilerinin duyduğu o gür ses tekrar yankılanmış: 'O baltayı bırak, yoksa seni paramparça ederim.' Küçükoğul sesten etkilenmiş olsa da baltasını indirmemiş, üçüncü darbeyi de vurmuş. Tam o sırada toprak sarsılmış ve ormanın arasından çamların boyuna erişen, omuzları kaya gibi geniş, kızıl yüzlü dev bir varlık ortaya çıkmış."
+      },
+      {
+        baslik: "4. BÖLÜM: ÇÖZÜM",
+        resim: "resim4.jpg",
+        metin: "Küçükoğul korkusunu belli etmemeyi başararak azık bohçasından bir yumurta almış ve devin karşısına geçip onu avucunda sıkarak kabuğunu çatlatmış. Taşları böyle sıkıp suyunu çıkardığını, kızdırırsa devi de bu taş gibi ezeceğini söylemiş. Gözleri büyüyen ve korkuya kapılan dev, ona dokunmama karşılığında ne isterse yapacağını söylemiş.\n\nKüçükoğul da ormandaki bütün kuru odunları kesip yığmasını istemiş; dev korkudan emre uyarak haftalar sürecek işi saatler içinde bitirmiş. Gece hava kararınca dev odunları boz eşeğin sırtına ve kendine yükleyerek köyün harman yerine kadar taşımış. Küçükoğul devden bir daha insanları korkutmayacağına dair söz alıp onu serbest bırakmış, dev de arkasına bakmadan ormanın derinliklerinde gözden kaybolmuş."
+      },
+      {
+        baslik: "5. BÖLÜM: DİLEK",
+        resim: "resim5.jpg",
+        metin: "Harman yerine giden yaşlı oduncu ve ağabeyler, kışlar yetecek kadar yığılmış devasa odunları görünce hayretten ve sevinçten adeta donakalmışlar. Küçükoğul başından geçenleri bir bir anlatmış; yaşlı oduncu oğlunu gururla bağrına basarak insanın yalnızca kuvvetiyle değil, aklı ve soğukkanlılığıyla da büyük işlerin üstesinden gelebileceğini söylemiş. Büyük kardeşler de küçük kardeşlerinin cesaretine ve zekasına hayranlık duyarak onu takdir etmişler.\n\nO günden sonra üç kardeş ele vererek çalışmış, yaşlı babalarını hiç üzmemişler ve evlerinde bolluk bereket eksik olmamış. Gökten üç elma düşmüş: Biri cesareti seçenlere, biri aklını kullananlara, biri de bu masalı dinleyenlere."
+      }
+    ];
+
+    let currentIndex = 0;
+    let isTransitioning = false;
+
+    function playAudio() {
+      const audio = document.getElementById('storyAudio');
+      audio.currentTime = 0;
+      audio.play().catch(() => {});
+    }
+
+    function renderSlide() {
+      const imgEl = document.getElementById('filmImage');
+      const titleEl = document.getElementById('sectionTitle');
+      const textEl = document.getElementById('storyText');
+      const counterEl = document.getElementById('counter');
+
+      imgEl.src = masalVerileri[currentIndex].resim;
+      titleEl.textContent = masalVerileri[currentIndex].baslik;
+      textEl.textContent = masalVerileri[currentIndex].metin;
+      counterEl.textContent = `[ Bölüm ${currentIndex + 1} / ${masalVerileri.length} ]`;
+
+      setTimeout(() => {
+        imgEl.classList.remove('changing');
+        textEl.classList.remove('changing');
+        isTransitioning = false;
+        updateButtons();
+      }, 50);
+    }
+
+    function changeSlide(direction) {
+      if (isTransitioning) return;
+      
+      const newIndex = currentIndex + direction;
+      if (newIndex >= 0 && newIndex < masalVerileri.length) {
+        isTransitioning = true;
+        document.getElementById('prevBtn').disabled = true;
+        document.getElementById('nextBtn').disabled = true;
+
+        playAudio();
+
+        const imgEl = document.getElementById('filmImage');
+        const textEl = document.getElementById('storyText');
+
+        imgEl.classList.add('changing');
+        textEl.classList.add('changing');
+
+        setTimeout(() => {
+          currentIndex = newIndex;
+          renderSlide();
+        }, 1500);
+      }
+    }
+
+    function updateButtons() {
+      document.getElementById('prevBtn').disabled = currentIndex === 0;
+      document.getElementById('nextBtn').disabled = currentIndex === masalVerileri.length - 1;
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') changeSlide(-1);
+      if (e.key === 'ArrowRight') changeSlide(1);
+    });
+
+    renderSlide();
+  </script>
+</body>
+</html>
